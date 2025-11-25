@@ -25,6 +25,8 @@ jobs:
 
     - name: golangci-lint
       uses: reviewdog/action-golangci-lint@v2
+      with:
+        workdir: cmd/adr-aggregator
 
     - name: Run govulncheck
       uses: golang/govulncheck-action@v1
