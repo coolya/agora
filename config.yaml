@@ -1,0 +1,6 @@
+sources:
+  - type: github
+    url: https://github.com/some-org/some-repo
+    path: docs/adrs
+    auth:
+      token: ${GITHUB_TOKEN} # This will be read from the environment variable
