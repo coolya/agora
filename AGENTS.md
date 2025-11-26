@@ -2,7 +2,7 @@ This document provides guidance for AI agents working on this project.
 
 ## Project Overview
 
-The `adr-aggregator` is a command-line tool written in Go that aggregates Architecture Decision Records (ADRs) from various sources, such as GitHub, GitLab, and Confluence. The tool fetches ADRs, parses them, and compiles them into a single `adrs.json` file.
+**agora** is a command-line tool written in Go that aggregates Architecture Decision Records (ADRs) from various sources, such as GitHub, GitLab, and Confluence. The tool fetches ADRs, parses them, and compiles them into a single `adrs.json` file. The Go module and binary are named `adr-aggregator`.
 
 ## Technology Stack
 
