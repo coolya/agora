@@ -1,0 +1,45 @@
+name: Go CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.24.3'
+
+    - name: Build
+      run: cd cmd/adr-aggregator && go build ./...
+
+    - name: Test
+      run: cd cmd/adr-aggregator && go test ./...
+
+    - name: golangci-lint
+      uses: reviewdog/action-golangci-lint@v2
+      with:
+        workdir: cmd/adr-aggregator
+
+    - name: Run govulncheck
+      uses: golang/govulncheck-action@v1
+      with:
+        go-version: '1.24.3'
+        work-dir: cmd/adr-aggregator
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@0.28.0
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'table'
+        exit-code: '1'
+        ignore-unfixed: true
+        severity: 'CRITICAL,HIGH'

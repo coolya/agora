@@ -19,7 +19,11 @@ sources:
 	if err := os.WriteFile(configFileName, []byte(content), 0644); err != nil {
 		t.Fatalf("Failed to write temp config file: %v", err)
 	}
-	defer os.Remove(configFileName) // clean up
+	defer func() {
+		if err := os.Remove(configFileName); err != nil {
+			t.Logf("failed to remove temporary config file: %v", err)
+		}
+	}()
 
 	cfg, err := LoadConfig()
 	if err != nil {
