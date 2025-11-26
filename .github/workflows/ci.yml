@@ -25,11 +25,14 @@ jobs:
 
     - name: golangci-lint
       uses: reviewdog/action-golangci-lint@v2
+      with:
+        workdir: cmd/adr-aggregator
 
     - name: Run govulncheck
       uses: golang/govulncheck-action@v1
       with:
         go-version: '1.24.3'
+        work-dir: cmd/adr-aggregator
 
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@0.28.0
