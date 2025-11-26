@@ -67,4 +67,4 @@ go test ./...
 2.  **Implement the `Fetch` method**: The `Fetch` method should contain the logic for fetching ADRs from the new data source.
 3.  **Update `main.go`**: In `cmd/adr-aggregator/main.go`, add a new case to the `switch` statement in the `run` function to handle the new source type.
 4.  **Update `config.yaml`**: Add a new entry to the `sources` list in `config.yaml` with the configuration for the new data source.
-5.  **Write tests**: Add unit tests for the new fetcher.
+5.  **Write tests**: Consider adding unit tests for the new fetcher. Note that the existing fetchers do not currently have tests, but tests exist for the `config` and `parser` packages which can serve as examples.
