@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"adr-aggregator/pkg/fetcher"
+	"agora-aggregator/pkg/fetcher"
 	"bufio"
 	"strings"
 )

@@ -1,6 +1,6 @@
 package fetcher
 
-import "adr-aggregator/pkg/config"
+import "agora-aggregator/pkg/config"
 
 // ADR holds the data of a single Architecture Decision Record.
 type ADR struct {
