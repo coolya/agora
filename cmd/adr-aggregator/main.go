@@ -6,6 +6,7 @@ import (
 	"adr-aggregator/pkg/parser"
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -39,7 +40,17 @@ func run(cmd *cobra.Command, args []string) {
 		case "github":
 			f = fetcher.NewGitHubFetcher(source.Auth.Token)
 		case "gitlab":
-			f = fetcher.NewGitLabFetcher()
+			parsedURL, err := url.Parse(source.URL)
+			if err != nil {
+				fmt.Printf("Error parsing GitLab URL %s: %v\n", source.URL, err)
+				continue
+			}
+			baseURL := parsedURL.Scheme + "://" + parsedURL.Host
+			f, err = fetcher.NewGitLabFetcher(source.Auth.Token, baseURL)
+			if err != nil {
+				fmt.Printf("Error creating GitLab fetcher for %s: %v\n", source.URL, err)
+				continue
+			}
 		case "confluence":
 			f = fetcher.NewConfluenceFetcher()
 		default:
