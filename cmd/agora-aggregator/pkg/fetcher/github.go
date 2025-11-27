@@ -1,7 +1,7 @@
 package fetcher
 
 import (
-	"adr-aggregator/pkg/config"
+	"agora-aggregator/pkg/config"
 	"context"
 	"fmt"
 	"net/http"

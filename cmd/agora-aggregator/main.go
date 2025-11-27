@@ -1,9 +1,9 @@
 package main
 
 import (
-	"adr-aggregator/pkg/config"
-	"adr-aggregator/pkg/fetcher"
-	"adr-aggregator/pkg/parser"
+	"agora-aggregator/pkg/config"
+	"agora-aggregator/pkg/fetcher"
+	"agora-aggregator/pkg/parser"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -12,7 +12,7 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "adr-aggregator",
+	Use:   "agora-aggregator",
 	Short: "A tool to aggregate Architecture Decision Records.",
 	Run:   run,
 }

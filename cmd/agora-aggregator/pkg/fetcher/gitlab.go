@@ -1,7 +1,7 @@
 package fetcher
 
 import (
-	"adr-aggregator/pkg/config"
+	"agora-aggregator/pkg/config"
 	"fmt"
 )
 
