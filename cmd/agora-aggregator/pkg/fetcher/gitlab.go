@@ -39,6 +39,9 @@ func (f *GitLabFetcher) Fetch(source config.Source) ([]ADR, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to get project %s: %w", projectID, err)
 	}
+	if project.DefaultBranch == "" {
+		return nil, fmt.Errorf("project %s has an empty default branch", projectID)
+	}
 
 	tree, _, err := f.client.Repositories.ListTree(projectID, &gitlab.ListTreeOptions{
 		Path: &source.Path,
