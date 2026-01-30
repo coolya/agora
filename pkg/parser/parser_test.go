@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"agora/pkg/fetcher"
+	"agora/pkg/domain"
 	"testing"
 )
 
@@ -50,7 +50,7 @@ This one is missing a status line.
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			adr := &fetcher.ADR{Content: tc.content}
+			adr := &domain.ADR{Content: tc.content}
 			Parse(adr)
 			if adr.Status != tc.expectedStatus {
 				t.Errorf("expected status %q, got %q", tc.expectedStatus, adr.Status)

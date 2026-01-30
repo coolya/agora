@@ -1,7 +1,7 @@
 package main
 
 import (
-	"agora/pkg/fetcher"
+	"agora/pkg/domain"
 	"agora/pkg/parser"
 	"agora/pkg/storage"
 	"path/filepath"
@@ -20,16 +20,24 @@ func TestIntegrationWithDatabase(t *testing.T) {
 	}
 
 	// Create some mock ADRs
-	adrs := []fetcher.ADR{
+	adrs := []domain.ADR{
 		{
-			Title:   "ADR 1: Use Go",
-			Content: "# ADR 1: Use Go\nStatus: ACCEPTED\nWe will use Go.",
-			URL:     "https://example.com/adr-1",
+			ID:         domain.GenerateID("https://example.com/adr-1"),
+			Title:      "ADR 1: Use Go",
+			Content:    "# ADR 1: Use Go\nStatus: ACCEPTED\nWe will use Go.",
+			URL:        "https://example.com/adr-1",
+			SourceType: "github",
+			SourceURL:  "https://github.com/example/repo",
+			SourceName: "github-0",
 		},
 		{
-			Title:   "ADR 2: Use SQLite",
-			Content: "# ADR 2: Use SQLite\nStatus: PROPOSED\nWe will use SQLite.",
-			URL:     "https://example.com/adr-2",
+			ID:         domain.GenerateID("https://example.com/adr-2"),
+			Title:      "ADR 2: Use SQLite",
+			Content:    "# ADR 2: Use SQLite\nStatus: PROPOSED\nWe will use SQLite.",
+			URL:        "https://example.com/adr-2",
+			SourceType: "github",
+			SourceURL:  "https://github.com/example/repo",
+			SourceName: "github-0",
 		},
 	}
 
@@ -54,13 +62,13 @@ func TestIntegrationWithDatabase(t *testing.T) {
 
 	// Verify count
 	var count int64
-	storage.DB.Model(&fetcher.ADR{}).Count(&count)
+	storage.DB.Model(&domain.ADR{}).Count(&count)
 	if count != 2 {
 		t.Errorf("expected 2 ADRs in database, got %d", count)
 	}
 
 	// Verify data
-	var savedADRs []fetcher.ADR
+	var savedADRs []domain.ADR
 	storage.DB.Find(&savedADRs)
 
 	// Check that we have the right number of records

@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"agora/pkg/fetcher"
+	"agora/pkg/domain"
 	"path/filepath"
 	"testing"
 )
@@ -32,18 +32,26 @@ func TestSaveADRs(t *testing.T) {
 	}
 
 	// Test saving ADRs
-	adrs := []fetcher.ADR{
+	adrs := []domain.ADR{
 		{
-			Title:   "ADR 1: Use Go",
-			Status:  "ACCEPTED",
-			Content: "We will use Go for this project.",
-			URL:     "https://example.com/adr-1",
+			ID:         domain.GenerateID("https://example.com/adr-1"),
+			Title:      "ADR 1: Use Go",
+			Status:     "ACCEPTED",
+			Content:    "We will use Go for this project.",
+			URL:        "https://example.com/adr-1",
+			SourceType: "github",
+			SourceURL:  "https://github.com/example/repo",
+			SourceName: "github-0",
 		},
 		{
-			Title:   "ADR 2: Use SQLite",
-			Status:  "PROPOSED",
-			Content: "We will use SQLite for persistence.",
-			URL:     "https://example.com/adr-2",
+			ID:         domain.GenerateID("https://example.com/adr-2"),
+			Title:      "ADR 2: Use SQLite",
+			Status:     "PROPOSED",
+			Content:    "We will use SQLite for persistence.",
+			URL:        "https://example.com/adr-2",
+			SourceType: "github",
+			SourceURL:  "https://github.com/example/repo",
+			SourceName: "github-0",
 		},
 	}
 
@@ -54,7 +62,7 @@ func TestSaveADRs(t *testing.T) {
 
 	// Verify ADRs were saved
 	var count int64
-	DB.Model(&fetcher.ADR{}).Count(&count)
+	DB.Model(&domain.ADR{}).Count(&count)
 	if count != 2 {
 		t.Errorf("expected 2 ADRs in database, got %d", count)
 	}
@@ -71,12 +79,16 @@ func TestSaveADRsUpsert(t *testing.T) {
 	}
 
 	// Save initial ADR
-	adrs := []fetcher.ADR{
+	adrs := []domain.ADR{
 		{
-			Title:   "ADR 1: Use Go",
-			Status:  "PROPOSED",
-			Content: "We will use Go for this project.",
-			URL:     "https://example.com/adr-1",
+			ID:         domain.GenerateID("https://example.com/adr-1"),
+			Title:      "ADR 1: Use Go",
+			Status:     "PROPOSED",
+			Content:    "We will use Go for this project.",
+			URL:        "https://example.com/adr-1",
+			SourceType: "github",
+			SourceURL:  "https://github.com/example/repo",
+			SourceName: "github-0",
 		},
 	}
 
@@ -86,12 +98,16 @@ func TestSaveADRsUpsert(t *testing.T) {
 	}
 
 	// Update the same ADR (same URL, different status)
-	updatedADRs := []fetcher.ADR{
+	updatedADRs := []domain.ADR{
 		{
-			Title:   "ADR 1: Use Go (Updated)",
-			Status:  "ACCEPTED",
-			Content: "We will use Go for this project. Updated content.",
-			URL:     "https://example.com/adr-1",
+			ID:         domain.GenerateID("https://example.com/adr-1"),
+			Title:      "ADR 1: Use Go (Updated)",
+			Status:     "ACCEPTED",
+			Content:    "We will use Go for this project. Updated content.",
+			URL:        "https://example.com/adr-1",
+			SourceType: "github",
+			SourceURL:  "https://github.com/example/repo",
+			SourceName: "github-0",
 		},
 	}
 
@@ -102,13 +118,13 @@ func TestSaveADRsUpsert(t *testing.T) {
 
 	// Verify only one ADR exists
 	var count int64
-	DB.Model(&fetcher.ADR{}).Count(&count)
+	DB.Model(&domain.ADR{}).Count(&count)
 	if count != 1 {
 		t.Errorf("expected 1 ADR in database after upsert, got %d", count)
 	}
 
 	// Verify the ADR was updated
-	var adr fetcher.ADR
+	var adr domain.ADR
 	result := DB.Where("url = ?", "https://example.com/adr-1").First(&adr)
 	if result.Error != nil {
 		t.Fatalf("Failed to query ADR: %v", result.Error)

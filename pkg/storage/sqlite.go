@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"agora/pkg/fetcher"
+	"agora/pkg/domain"
 	"fmt"
 
 	"gorm.io/driver/sqlite"
@@ -21,7 +21,7 @@ func InitDB(dbPath string) error {
 	}
 
 	// Auto-migrate the schema
-	err = DB.AutoMigrate(&fetcher.ADR{})
+	err = DB.AutoMigrate(&domain.ADR{})
 	if err != nil {
 		return fmt.Errorf("failed to migrate database: %w", err)
 	}
@@ -30,7 +30,7 @@ func InitDB(dbPath string) error {
 }
 
 // SaveADRs saves ADRs to the database using upsert (insert or update on conflict)
-func SaveADRs(adrs []fetcher.ADR) error {
+func SaveADRs(adrs []domain.ADR) error {
 	if DB == nil {
 		return fmt.Errorf("database not initialized")
 	}
@@ -39,7 +39,7 @@ func SaveADRs(adrs []fetcher.ADR) error {
 	// This will update all fields if a conflict occurs on the URL
 	result := DB.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "url"}},
-		DoUpdates: clause.AssignmentColumns([]string{"title", "status", "content", "updated_at"}),
+		DoUpdates: clause.AssignmentColumns([]string{"title", "status", "content", "source_type", "source_url", "source_name", "updated_at"}),
 	}).Create(&adrs)
 
 	if result.Error != nil {

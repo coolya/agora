@@ -2,6 +2,7 @@ package fetcher
 
 import (
 	"agora/pkg/config"
+	"agora/pkg/domain"
 	"fmt"
 	"net/url"
 	"strings"
@@ -28,7 +29,7 @@ func NewGitLabFetcher(token, baseURL string) (*GitLabFetcher, error) {
 }
 
 // Fetch retrieves ADRs from the configured GitLab repository.
-func (f *GitLabFetcher) Fetch(source config.Source) ([]ADR, error) {
+func (f *GitLabFetcher) Fetch(source config.Source) ([]domain.ADR, error) {
 	projectID, err := parseGitLabURL(source.URL)
 	if err != nil {
 		return nil, err
@@ -54,7 +55,7 @@ func (f *GitLabFetcher) Fetch(source config.Source) ([]ADR, error) {
 		return nil, fmt.Errorf("failed to list tree for %s: %w", projectID, err)
 	}
 
-	var adrs []ADR
+	var adrs []domain.ADR
 	for _, node := range tree {
 		if strings.HasSuffix(node.Name, ".md") {
 			file, _, err := f.client.RepositoryFiles.GetFile(projectID, node.Path, &gitlab.GetFileOptions{
@@ -63,10 +64,15 @@ func (f *GitLabFetcher) Fetch(source config.Source) ([]ADR, error) {
 			if err != nil {
 				return nil, fmt.Errorf("failed to get file %s: %w", node.Path, err)
 			}
-			adrs = append(adrs, ADR{
-				Title:   node.Name,
-				Content: file.Content,
-				URL:     fmt.Sprintf("%s/-/blob/%s/%s", project.WebURL, project.DefaultBranch, node.Path),
+			adrURL := fmt.Sprintf("%s/-/blob/%s/%s", project.WebURL, project.DefaultBranch, node.Path)
+			adrs = append(adrs, domain.ADR{
+				ID:         domain.GenerateID(adrURL),
+				Title:      node.Name,
+				Content:    file.Content,
+				URL:        adrURL,
+				SourceType: source.Type,
+				SourceURL:  source.URL,
+				SourceName: source.Name,
 			})
 		}
 	}
