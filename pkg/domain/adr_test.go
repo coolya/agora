@@ -11,29 +11,29 @@ func TestGenerateID(t *testing.T) {
 		expected string
 	}{
 		{
-			name:     "Same URL produces same ID (deterministic)",
+			name:     "GitHub URL with path",
 			url:      "https://github.com/coolya/agora/blob/main/docs/adr/0001-use-go.md",
-			expected: GenerateID("https://github.com/coolya/agora/blob/main/docs/adr/0001-use-go.md"),
+			expected: "G1es6c5sPsH",
 		},
 		{
-			name:     "Different URLs produce different IDs",
+			name:     "Different GitHub URL",
 			url:      "https://github.com/coolya/agora/blob/main/docs/adr/0002-use-cobra.md",
-			expected: GenerateID("https://github.com/coolya/agora/blob/main/docs/adr/0002-use-cobra.md"),
+			expected: "KBviOqpmaKR",
 		},
 		{
 			name:     "Empty string",
 			url:      "",
-			expected: GenerateID(""),
+			expected: "HVbkRR8oQIH",
 		},
 		{
 			name:     "URL with special characters",
 			url:      "https://example.com/path?query=value&param=123#fragment",
-			expected: GenerateID("https://example.com/path?query=value&param=123#fragment"),
+			expected: "Aoyymj7Hsw7",
 		},
 		{
 			name:     "URL with unicode characters",
 			url:      "https://example.com/文档/ADR-001.md",
-			expected: GenerateID("https://example.com/文档/ADR-001.md"),
+			expected: "HFkb30EpPke",
 		},
 	}
 
@@ -57,7 +57,7 @@ func TestGenerateID(t *testing.T) {
 	})
 
 	// Test that different URLs produce different IDs
-	t.Run("Different URLs produce different IDs", func(t *testing.T) {
+	t.Run("Uniqueness check", func(t *testing.T) {
 		url1 := "https://github.com/coolya/agora/docs/adr/0001.md"
 		url2 := "https://github.com/coolya/agora/docs/adr/0002.md"
 		id1 := GenerateID(url1)
