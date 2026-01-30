@@ -139,9 +139,9 @@ func TestEnsureUniqueSourceNames_AvoidCollisions(t *testing.T) {
 	cfg := &Config{
 		Sources: []Source{
 			{Name: "github-0", Type: "github", URL: "https://github.com/org1/repo1"},
-			{Type: "github", URL: "https://github.com/org2/repo2"}, // Should become github-1, not github-0
+			{Type: "github", URL: "https://github.com/org2/repo2"}, // Should become github-1
 			{Name: "github-2", Type: "github", URL: "https://github.com/org3/repo3"},
-			{Type: "github", URL: "https://github.com/org4/repo4"}, // Should become github-1 or github-3
+			{Type: "github", URL: "https://github.com/org4/repo4"}, // Should become github-3 (skips 0, 1, 2)
 		},
 	}
 
@@ -159,11 +159,11 @@ func TestEnsureUniqueSourceNames_AvoidCollisions(t *testing.T) {
 		seenNames[source.Name] = true
 	}
 
-	// Verify manually specified names are preserved
-	if cfg.Sources[0].Name != "github-0" {
-		t.Errorf("source[0]: expected name %q, got %q", "github-0", cfg.Sources[0].Name)
-	}
-	if cfg.Sources[2].Name != "github-2" {
-		t.Errorf("source[2]: expected name %q, got %q", "github-2", cfg.Sources[2].Name)
+	// Verify manually specified names are preserved and auto-generated names avoid collisions
+	expectedNames := []string{"github-0", "github-1", "github-2", "github-3"}
+	for i, expected := range expectedNames {
+		if cfg.Sources[i].Name != expected {
+			t.Errorf("source[%d]: expected name %q, got %q", i, expected, cfg.Sources[i].Name)
+		}
 	}
 }
