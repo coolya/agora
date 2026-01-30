@@ -3,6 +3,7 @@
 
 # Go build artifacts
 /cmd/agora-aggregator/agora-aggregator
+/agora-aggregator
 
 # Test binaries
 *.test
