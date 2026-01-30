@@ -9,15 +9,21 @@ type Config struct {
 
 // Source represents a single source of ADRs, like a GitHub repository
 type Source struct {
-	Type string `mapstructure:"type"`
-	URL  string `mapstructure:"url"`
-	Path string `mapstructure:"path"`
-	Auth Auth   `mapstructure:"auth"`
+	Type   string `mapstructure:"type"`
+	URL    string `mapstructure:"url"`
+	Path   string `mapstructure:"path"`
+	Auth   Auth   `mapstructure:"auth"`
+	GitLab GitLab `mapstructure:"gitlab"`
 }
 
 // Auth holds the authentication details for a source
 type Auth struct {
 	Token string `mapstructure:"token"`
+}
+
+// GitLab holds GitLab-specific configuration.
+type GitLab struct {
+	BaseURL string `mapstructure:"baseURL"`
 }
 
 // LoadConfig reads configuration from file or environment variables.
