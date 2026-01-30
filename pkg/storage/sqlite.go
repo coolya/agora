@@ -39,7 +39,7 @@ func SaveADRs(adrs []domain.ADR) error {
 	// This will update all fields if a conflict occurs on the URL
 	result := DB.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "url"}},
-		DoUpdates: clause.AssignmentColumns([]string{"title", "status", "content", "source_type", "source_url", "source_name", "updated_at"}),
+		DoUpdates: clause.AssignmentColumns([]string{"id", "title", "status", "content", "source_type", "source_url", "source_name", "updated_at"}),
 	}).Create(&adrs)
 
 	if result.Error != nil {
