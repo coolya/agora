@@ -142,7 +142,7 @@ func TestEnsureUniqueSourceNames_AvoidCollisions(t *testing.T) {
 			{Name: "github-0", Type: "github", URL: "https://github.com/org1/repo1"},
 			{Type: "github", URL: "https://github.com/org2/repo2"}, // Should become github-1
 			{Name: "github-2", Type: "github", URL: "https://github.com/org3/repo3"},
-			{Type: "github", URL: "https://github.com/org4/repo4"}, // Should become github-3 (skips 0, 1, 2)
+			{Type: "github", URL: "https://github.com/org4/repo4"}, // Should become github-3 (skips github-2 which is manually specified)
 		},
 	}
 
