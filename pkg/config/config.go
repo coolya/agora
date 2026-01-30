@@ -64,7 +64,12 @@ func (c *Config) validateAndNormalizeSources() error {
 		url := c.Sources[i].URL
 		if url != "" {
 			if existingName, exists := seenURLs[url]; exists {
-				return fmt.Errorf("duplicate source URL %q: used by both %q and source at index %d", url, existingName, i)
+				// Build informative error message
+				currentIdentifier := c.Sources[i].Name
+				if currentIdentifier == "" {
+					currentIdentifier = fmt.Sprintf("unnamed source (type: %s, index: %d)", c.Sources[i].Type, i)
+				}
+				return fmt.Errorf("duplicate source URL %q: used by %q and %s", url, existingName, currentIdentifier)
 			}
 		}
 
@@ -101,7 +106,7 @@ func (c *Config) validateAndNormalizeSources() error {
 	return nil
 }
 
-// ensureUniqueSourceNames is deprecated, use validateAndNormalizeSources instead
+// Deprecated: ensureUniqueSourceNames is deprecated. Use validateAndNormalizeSources instead.
 func (c *Config) ensureUniqueSourceNames() error {
 	return c.validateAndNormalizeSources()
 }
