@@ -1,13 +1,18 @@
 package fetcher
 
-import "agora-aggregator/pkg/config"
+import (
+	"agora/pkg/config"
+
+	"gorm.io/gorm"
+)
 
 // ADR holds the data of a single Architecture Decision Record.
 type ADR struct {
-	Title   string
+	gorm.Model
+	Title   string `gorm:"index"`
 	Status  string
-	Content string
-	URL     string
+	Content string `gorm:"type:text"`
+	URL     string `gorm:"uniqueIndex"`
 }
 
 // Fetcher is the interface for fetching ADRs from a source.

@@ -1,10 +1,10 @@
 package main
 
 import (
-	"agora-aggregator/pkg/config"
-	"agora-aggregator/pkg/fetcher"
-	"agora-aggregator/pkg/parser"
-	"encoding/json"
+	"agora/pkg/config"
+	"agora/pkg/fetcher"
+	"agora/pkg/parser"
+	"agora/pkg/storage"
 	"fmt"
 	"os"
 
@@ -31,6 +31,13 @@ func run(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
+	// Initialize the database
+	err = storage.InitDB("adrs.db")
+	if err != nil {
+		fmt.Printf("Error initializing database: %v\n", err)
+		os.Exit(1)
+	}
+
 	var allADRs []fetcher.ADR
 
 	for _, source := range cfg.Sources {
@@ -43,7 +50,7 @@ func run(cmd *cobra.Command, args []string) {
 		case "confluence":
 			f = fetcher.NewConfluenceFetcher()
 		default:
-			fmt.Printf("Unknown source type: %s\n", source.Type)
+			fmt.Printf("Unknown source type: %s (URL: %s)\n", source.Type, source.URL)
 			continue
 		}
 
@@ -60,17 +67,15 @@ func run(cmd *cobra.Command, args []string) {
 		allADRs = append(allADRs, adrs...)
 	}
 
-	jsonData, err := json.MarshalIndent(allADRs, "", "  ")
-	if err != nil {
-		fmt.Printf("Error marshaling to JSON: %v\n", err)
-		os.Exit(1)
+	// Save ADRs to database
+	if len(allADRs) > 0 {
+		err = storage.SaveADRs(allADRs)
+		if err != nil {
+			fmt.Printf("Error saving ADRs to database: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("Successfully aggregated %d ADRs to adrs.db\n", len(allADRs))
+	} else {
+		fmt.Println("No ADRs were fetched from any source")
 	}
-
-	err = os.WriteFile("adrs.json", jsonData, 0644)
-	if err != nil {
-		fmt.Printf("Error writing to adrs.json: %v\n", err)
-		os.Exit(1)
-	}
-
-	fmt.Println("Successfully aggregated ADRs to adrs.json")
 }
