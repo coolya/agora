@@ -1,10 +1,10 @@
 package main
 
 import (
-	"agora-aggregator/pkg/config"
-	"agora-aggregator/pkg/fetcher"
-	"agora-aggregator/pkg/parser"
-	"encoding/json"
+	"agora/pkg/config"
+	"agora/pkg/fetcher"
+	"agora/pkg/parser"
+	"agora/pkg/storage"
 	"fmt"
 	"os"
 
@@ -28,6 +28,13 @@ func run(cmd *cobra.Command, args []string) {
 	cfg, err := config.LoadConfig()
 	if err != nil {
 		fmt.Printf("Error loading config: %v\n", err)
+		os.Exit(1)
+	}
+
+	// Initialize the database
+	err = storage.InitDB("adrs.db")
+	if err != nil {
+		fmt.Printf("Error initializing database: %v\n", err)
 		os.Exit(1)
 	}
 
@@ -60,17 +67,12 @@ func run(cmd *cobra.Command, args []string) {
 		allADRs = append(allADRs, adrs...)
 	}
 
-	jsonData, err := json.MarshalIndent(allADRs, "", "  ")
+	// Save ADRs to database
+	err = storage.SaveADRs(allADRs)
 	if err != nil {
-		fmt.Printf("Error marshaling to JSON: %v\n", err)
+		fmt.Printf("Error saving ADRs to database: %v\n", err)
 		os.Exit(1)
 	}
 
-	err = os.WriteFile("adrs.json", jsonData, 0644)
-	if err != nil {
-		fmt.Printf("Error writing to adrs.json: %v\n", err)
-		os.Exit(1)
-	}
-
-	fmt.Println("Successfully aggregated ADRs to adrs.json")
+	fmt.Printf("Successfully aggregated %d ADRs to adrs.db\n", len(allADRs))
 }

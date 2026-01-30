@@ -1,0 +1,11 @@
+# Database files
+*.db
+
+# Go build artifacts
+/cmd/agora-aggregator/agora-aggregator
+
+# Test binaries
+*.test
+
+# Old JSON output (replaced by SQLite)
+adrs.json
