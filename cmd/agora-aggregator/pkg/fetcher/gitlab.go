@@ -11,16 +11,16 @@ import (
 
 // GitLabFetcher fetches ADRs from a GitLab repository.
 type GitLabFetcher struct {
-	client *gitlab.GitLabClient
+	client *gitlab.Client
 }
 
 // NewGitLabFetcher creates a new GitLabFetcher.
 func NewGitLabFetcher(token, baseURL string) (*GitLabFetcher, error) {
-	var options []gitlab.OptionFunc
+	var options []gitlab.ClientOptionFunc
 	if baseURL != "" {
 		options = append(options, gitlab.WithBaseURL(baseURL))
 	}
-	gclient, err := gitlab.New(token, options...)
+	gclient, err := gitlab.NewClient(token, options...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create gitlab client: %w", err)
 	}
