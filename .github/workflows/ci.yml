@@ -18,21 +18,18 @@ jobs:
         go-version: '1.24.3'
 
     - name: Build
-      run: cd cmd/agora-aggregator && go build ./...
+      run: go build ./cmd/agora/
 
     - name: Test
-      run: cd cmd/agora-aggregator && go test ./...
+      run: go test ./...
 
     - name: golangci-lint
       uses: reviewdog/action-golangci-lint@v2
-      with:
-        workdir: cmd/agora-aggregator
 
     - name: Run govulncheck
       uses: golang/govulncheck-action@v1
       with:
         go-version: '1.24.3'
-        work-dir: cmd/agora-aggregator
 
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@0.28.0

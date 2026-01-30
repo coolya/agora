@@ -3,13 +3,20 @@ A tool for aggregating architecture decision records from different places and f
 
 ## Architecture
 
-The project uses a root module structure (`agora`) that enables code sharing between the aggregator and future API services:
+The project uses a root module structure (`agora`) with a monolithic CLI application that supports multiple subcommands for different functionalities:
 
-- **`cmd/agora-aggregator/`**: The ADR aggregator CLI application
+### Directory Structure
+- **`cmd/agora/`**: The main monolithic CLI application with subcommands
+  - `main.go`: Entry point
+  - `root.go`: Root command definition
+  - `aggregate.go`: ADR aggregation subcommand
+  - `serve.go`: REST API server subcommand (planned)
+  - `query.go`: ADR query subcommand (planned)
 - **`pkg/config/`**: Configuration loading and management
 - **`pkg/fetcher/`**: ADR fetching logic for different sources (GitHub, GitLab, Confluence)
 - **`pkg/parser/`**: ADR parsing and status extraction
 - **`pkg/storage/`**: SQLite database persistence layer using GORM
+- **`web/`**: Web UI for visualizing and interacting with ADRs (planned)
 
 ## Getting Started
 
@@ -19,29 +26,36 @@ The project uses a root module structure (`agora`) that enables code sharing bet
 
 ### Building the Application
 
-To build the `agora-aggregator` tool, run the following command from the repository root:
+To build the `agora` tool, run the following command from the repository root:
 
 ```bash
-go build ./cmd/agora-aggregator/
+go build ./cmd/agora/
 ```
 
 ### Running the Application
 
-The `agora-aggregator` tool is configured using `config.yaml`. The `config.yaml` file specifies the sources from which to fetch ADRs.
+The `agora` tool is a multi-purpose CLI with several subcommands. It is configured using `config.yaml`, which specifies the sources from which to fetch ADRs.
 
-Before running the application, you may need to set the `GITHUB_TOKEN` environment variable to authenticate with the GitHub API:
+#### Aggregating ADRs
+
+Before running the aggregation, you may need to set the `GITHUB_TOKEN` environment variable to authenticate with the GitHub API:
 
 ```bash
 export GITHUB_TOKEN="your_github_token"
 ```
 
-To run the tool, execute the following command from the repository root:
+To aggregate ADRs from configured sources:
 
 ```bash
-./cmd/agora-aggregator/agora-aggregator
+./agora aggregate
 ```
 
 The aggregator will fetch ADRs from the configured sources and store them in a SQLite database (`adrs.db`).
+
+#### Future Subcommands
+
+- `agora serve`: Start a REST API server (planned)
+- `agora query`: Query ADRs from the database (planned)
 
 ### Testing
 
