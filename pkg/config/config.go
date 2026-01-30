@@ -59,17 +59,28 @@ func (c *Config) ensureUniqueSourceNames() error {
 	typeCounters := make(map[string]int)
 
 	for i := range c.Sources {
-		// If name is empty, generate one based on type and counter
-		if c.Sources[i].Name == "" {
-			typeCounters[c.Sources[i].Type]++
-			c.Sources[i].Name = fmt.Sprintf("%s-%d", c.Sources[i].Type, typeCounters[c.Sources[i].Type]-1)
+		// If name is already set, just validate and record it
+		if c.Sources[i].Name != "" {
+			if seenNames[c.Sources[i].Name] {
+				return fmt.Errorf("duplicate source name: %s", c.Sources[i].Name)
+			}
+			seenNames[c.Sources[i].Name] = true
+			continue
 		}
 
-		// Check for duplicates
-		if seenNames[c.Sources[i].Name] {
-			return fmt.Errorf("duplicate source name: %s", c.Sources[i].Name)
+		// Name is empty: generate one based on type and counter, avoiding collisions
+		sourceType := c.Sources[i].Type
+		for {
+			counter := typeCounters[sourceType]
+			candidate := fmt.Sprintf("%s-%d", sourceType, counter)
+			typeCounters[sourceType] = counter + 1
+
+			if !seenNames[candidate] {
+				c.Sources[i].Name = candidate
+				seenNames[candidate] = true
+				break
+			}
 		}
-		seenNames[c.Sources[i].Name] = true
 	}
 
 	return nil
