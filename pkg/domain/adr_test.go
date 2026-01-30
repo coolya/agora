@@ -56,8 +56,8 @@ func TestGenerateID(t *testing.T) {
 		}
 	})
 
-	// Test that different URLs produce different IDs
-	t.Run("Uniqueness check", func(t *testing.T) {
+	// Test that different URLs produce different IDs (for these specific cases)
+	t.Run("Different URLs produce different IDs", func(t *testing.T) {
 		url1 := "https://github.com/coolya/agora/docs/adr/0001.md"
 		url2 := "https://github.com/coolya/agora/docs/adr/0002.md"
 		id1 := GenerateID(url1)
