@@ -4,14 +4,14 @@ import (
 	"agora/pkg/fetcher"
 	"agora/pkg/parser"
 	"agora/pkg/storage"
-	"os"
+	"path/filepath"
 	"testing"
 )
 
 func TestIntegrationWithDatabase(t *testing.T) {
-	// Create a temporary database
-	dbPath := "/tmp/test_integration.db"
-	defer os.Remove(dbPath)
+	// Create a temporary directory for the test
+	tmpDir := t.TempDir()
+	dbPath := filepath.Join(tmpDir, "test_integration.db")
 
 	// Initialize the database
 	err := storage.InitDB(dbPath)

@@ -50,7 +50,7 @@ func run(cmd *cobra.Command, args []string) {
 		case "confluence":
 			f = fetcher.NewConfluenceFetcher()
 		default:
-			fmt.Printf("Unknown source type: %s\n", source.Type)
+			fmt.Printf("Unknown source type: %s (URL: %s)\n", source.Type, source.URL)
 			continue
 		}
 

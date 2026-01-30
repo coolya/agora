@@ -2,14 +2,14 @@ package storage
 
 import (
 	"agora/pkg/fetcher"
-	"os"
+	"path/filepath"
 	"testing"
 )
 
 func TestInitDB(t *testing.T) {
-	// Create a temporary database file
-	dbPath := "/tmp/test_agora.db"
-	defer os.Remove(dbPath)
+	// Create a temporary directory for the test
+	tmpDir := t.TempDir()
+	dbPath := filepath.Join(tmpDir, "test_agora.db")
 
 	err := InitDB(dbPath)
 	if err != nil {
@@ -22,9 +22,9 @@ func TestInitDB(t *testing.T) {
 }
 
 func TestSaveADRs(t *testing.T) {
-	// Create a temporary database
-	dbPath := "/tmp/test_agora_save.db"
-	defer os.Remove(dbPath)
+	// Create a temporary directory for the test
+	tmpDir := t.TempDir()
+	dbPath := filepath.Join(tmpDir, "test_agora_save.db")
 
 	err := InitDB(dbPath)
 	if err != nil {
@@ -61,9 +61,9 @@ func TestSaveADRs(t *testing.T) {
 }
 
 func TestSaveADRsUpsert(t *testing.T) {
-	// Create a temporary database
-	dbPath := "/tmp/test_agora_upsert.db"
-	defer os.Remove(dbPath)
+	// Create a temporary directory for the test
+	tmpDir := t.TempDir()
+	dbPath := filepath.Join(tmpDir, "test_agora_upsert.db")
 
 	err := InitDB(dbPath)
 	if err != nil {
@@ -109,7 +109,10 @@ func TestSaveADRsUpsert(t *testing.T) {
 
 	// Verify the ADR was updated
 	var adr fetcher.ADR
-	DB.Where("url = ?", "https://example.com/adr-1").First(&adr)
+	result := DB.Where("url = ?", "https://example.com/adr-1").First(&adr)
+	if result.Error != nil {
+		t.Fatalf("Failed to query ADR: %v", result.Error)
+	}
 	if adr.Status != "ACCEPTED" {
 		t.Errorf("expected status 'ACCEPTED', got %q", adr.Status)
 	}
