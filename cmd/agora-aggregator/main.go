@@ -68,11 +68,14 @@ func run(cmd *cobra.Command, args []string) {
 	}
 
 	// Save ADRs to database
-	err = storage.SaveADRs(allADRs)
-	if err != nil {
-		fmt.Printf("Error saving ADRs to database: %v\n", err)
-		os.Exit(1)
+	if len(allADRs) > 0 {
+		err = storage.SaveADRs(allADRs)
+		if err != nil {
+			fmt.Printf("Error saving ADRs to database: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("Successfully aggregated %d ADRs to adrs.db\n", len(allADRs))
+	} else {
+		fmt.Println("No ADRs were fetched from any source")
 	}
-
-	fmt.Printf("Successfully aggregated %d ADRs to adrs.db\n", len(allADRs))
 }
