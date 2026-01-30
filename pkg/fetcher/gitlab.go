@@ -1,7 +1,7 @@
 package fetcher
 
 import (
-	"agora-aggregator/pkg/config"
+	"agora/pkg/config"
 	"fmt"
 	"net/url"
 	"strings"

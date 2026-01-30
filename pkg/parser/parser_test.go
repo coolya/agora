@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"agora-aggregator/pkg/fetcher"
+	"agora/pkg/fetcher"
 	"testing"
 )
 
