@@ -34,8 +34,21 @@ func (f *GitLabFetcher) Fetch(source config.Source) ([]ADR, error) {
 		return nil, err
 	}
 
+	// Get the project to determine the default branch
+	project, _, err := f.client.Projects.GetProject(projectID, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get project %s: %w", projectID, err)
+	}
+	if project == nil || project.WebURL == "" {
+		return nil, fmt.Errorf("project %s has empty or missing WebURL", projectID)
+	}
+	if project.DefaultBranch == "" {
+		return nil, fmt.Errorf("project %s has an empty default branch", projectID)
+	}
+
 	tree, _, err := f.client.Repositories.ListTree(projectID, &gitlab.ListTreeOptions{
 		Path: &source.Path,
+		Ref:  &project.DefaultBranch,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to list tree for %s: %w", projectID, err)
@@ -44,9 +57,8 @@ func (f *GitLabFetcher) Fetch(source config.Source) ([]ADR, error) {
 	var adrs []ADR
 	for _, node := range tree {
 		if strings.HasSuffix(node.Name, ".md") {
-			ref := "main" // Assuming main branch
 			file, _, err := f.client.RepositoryFiles.GetFile(projectID, node.Path, &gitlab.GetFileOptions{
-				Ref: &ref,
+				Ref: &project.DefaultBranch,
 			})
 			if err != nil {
 				return nil, fmt.Errorf("failed to get file %s: %w", node.Path, err)
@@ -54,7 +66,7 @@ func (f *GitLabFetcher) Fetch(source config.Source) ([]ADR, error) {
 			adrs = append(adrs, ADR{
 				Title:   node.Name,
 				Content: file.Content,
-				URL:     fmt.Sprintf("%s/blob/main/%s", source.URL, node.Path),
+				URL:     fmt.Sprintf("%s/-/blob/%s/%s", project.WebURL, project.DefaultBranch, node.Path),
 			})
 		}
 	}
