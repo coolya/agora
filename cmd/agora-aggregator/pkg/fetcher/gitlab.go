@@ -39,6 +39,9 @@ func (f *GitLabFetcher) Fetch(source config.Source) ([]ADR, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to get project %s: %w", projectID, err)
 	}
+	if project == nil || project.WebURL == "" {
+		return nil, fmt.Errorf("project %s has empty or missing WebURL", projectID)
+	}
 	if project.DefaultBranch == "" {
 		return nil, fmt.Errorf("project %s has an empty default branch", projectID)
 	}
