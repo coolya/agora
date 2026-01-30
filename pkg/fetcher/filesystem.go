@@ -69,7 +69,12 @@ func (f *FileSystemFetcher) Fetch(source config.Source) ([]domain.ADR, error) {
 		}
 
 		// Create ADR record with normalized absolute path in URL to ensure uniqueness
-		fileURL := "file://" + filePath
+		normalizedPath := filepath.ToSlash(filePath)
+		fileURL := "file:///" + normalizedPath
+		if strings.HasPrefix(normalizedPath, "/") {
+			// Unix-style absolute path already starts with '/', so "file://" yields "file:///..."
+			fileURL = "file://" + normalizedPath
+		}
 		adrs = append(adrs, domain.ADR{
 			ID:         domain.GenerateID(fileURL),
 			Title:      entry.Name(),
