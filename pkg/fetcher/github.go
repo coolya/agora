@@ -2,6 +2,7 @@ package fetcher
 
 import (
 	"agora/pkg/config"
+	"agora/pkg/domain"
 	"context"
 	"fmt"
 	"net/http"
@@ -31,7 +32,7 @@ func NewGitHubFetcher(token string) *GitHubFetcher {
 }
 
 // Fetch retrieves ADRs from the configured GitHub repository.
-func (f *GitHubFetcher) Fetch(source config.Source) ([]ADR, error) {
+func (f *GitHubFetcher) Fetch(source config.Source) ([]domain.ADR, error) {
 	owner, repo, err := parseGitHubURL(source.URL)
 	if err != nil {
 		return nil, err
@@ -48,7 +49,7 @@ func (f *GitHubFetcher) Fetch(source config.Source) ([]ADR, error) {
 		return nil, fmt.Errorf("failed to get contents of %s: %w", source.Path, err)
 	}
 
-	var adrs []ADR
+	var adrs []domain.ADR
 	for _, item := range directoryContent {
 		if strings.HasSuffix(*item.Name, ".md") {
 			fileContent, _, _, err := f.client.Repositories.GetContents(
@@ -65,10 +66,15 @@ func (f *GitHubFetcher) Fetch(source config.Source) ([]ADR, error) {
 			if err != nil {
 				return nil, fmt.Errorf("failed to decode content of %s: %w", *item.Path, err)
 			}
-			adrs = append(adrs, ADR{
-				Title:   *item.Name,
-				Content: content,
-				URL:     *item.HTMLURL,
+			adrURL := *item.HTMLURL
+			adrs = append(adrs, domain.ADR{
+				ID:         domain.GenerateID(adrURL),
+				Title:      *item.Name,
+				Content:    content,
+				URL:        adrURL,
+				SourceType: source.Type,
+				SourceURL:  source.URL,
+				SourceName: source.Name,
 			})
 		}
 	}

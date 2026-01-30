@@ -2,6 +2,7 @@ package fetcher
 
 import (
 	"agora/pkg/config"
+	"agora/pkg/domain"
 	"fmt"
 )
 
@@ -14,6 +15,6 @@ func NewConfluenceFetcher() *ConfluenceFetcher {
 }
 
 // Fetch retrieves ADRs from the configured Confluence space.
-func (f *ConfluenceFetcher) Fetch(source config.Source) ([]ADR, error) {
+func (f *ConfluenceFetcher) Fetch(source config.Source) ([]domain.ADR, error) {
 	return nil, fmt.Errorf("confluence fetcher not implemented")
 }

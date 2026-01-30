@@ -11,3 +11,4 @@
 # Old JSON output (replaced by SQLite)
 adrs.json
 .idea/agora.iml
+agora

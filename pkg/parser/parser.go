@@ -1,13 +1,13 @@
 package parser
 
 import (
-	"agora/pkg/fetcher"
+	"agora/pkg/domain"
 	"bufio"
 	"strings"
 )
 
 // Parse extracts the status from the ADR content.
-func Parse(adr *fetcher.ADR) {
+func Parse(adr *domain.ADR) {
 	scanner := bufio.NewScanner(strings.NewReader(adr.Content))
 	for scanner.Scan() {
 		line := scanner.Text()

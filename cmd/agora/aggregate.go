@@ -2,6 +2,7 @@ package main
 
 import (
 	"agora/pkg/config"
+	"agora/pkg/domain"
 	"agora/pkg/fetcher"
 	"agora/pkg/parser"
 	"agora/pkg/storage"
@@ -33,7 +34,7 @@ func runAggregate(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	var allADRs []fetcher.ADR
+	var allADRs []domain.ADR
 
 	for _, source := range cfg.Sources {
 		var f fetcher.Fetcher
