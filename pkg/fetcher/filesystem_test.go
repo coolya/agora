@@ -187,3 +187,43 @@ func TestFileSystemFetcher_PathNormalization(t *testing.T) {
 	}
 }
 
+func TestFileSystemFetcher_EmptyDirectory(t *testing.T) {
+	// Create a temporary directory for testing
+	tmpDir, err := os.MkdirTemp("", "adr-test-empty")
+	if err != nil {
+		t.Fatalf("failed to create temp directory: %v", err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	// Create some non-markdown files in the directory
+	err = os.WriteFile(filepath.Join(tmpDir, "readme.txt"), []byte("This is a readme"), 0644)
+	if err != nil {
+		t.Fatalf("failed to write readme.txt: %v", err)
+	}
+
+	err = os.WriteFile(filepath.Join(tmpDir, "config.yaml"), []byte("key: value"), 0644)
+	if err != nil {
+		t.Fatalf("failed to write config.yaml: %v", err)
+	}
+
+	fetcher := NewFileSystemFetcher()
+	source := config.Source{
+		Name: "Empty Test",
+		Type: "filesystem",
+		Path: tmpDir,
+	}
+
+	adrs, err := fetcher.Fetch(source)
+	if err != nil {
+		t.Fatalf("Fetch failed: %v", err)
+	}
+
+	if len(adrs) != 0 {
+		t.Errorf("expected 0 ADRs from directory with no markdown files, got %d", len(adrs))
+	}
+
+	if adrs == nil {
+		t.Error("expected non-nil slice, got nil")
+	}
+}
+

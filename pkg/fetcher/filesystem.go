@@ -47,7 +47,7 @@ func (f *FileSystemFetcher) Fetch(source config.Source) ([]domain.ADR, error) {
 		return nil, fmt.Errorf("failed to read directory %s: %w", absPath, err)
 	}
 
-	var adrs []domain.ADR
+	adrs := make([]domain.ADR, 0)
 
 	for _, entry := range entries {
 		// Only process files, skip directories
