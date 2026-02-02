@@ -12,3 +12,8 @@
 adrs.json
 .idea/agora.iml
 agora
+.idea/db-forest-config.xml
+.idea/data_source_mapping.xml
+.idea/dataSources.xml
+.DS_Store
+.idea/copilot.data.migration.ask2agent.xml

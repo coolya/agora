@@ -16,7 +16,7 @@ import (
 var aggregateCmd = &cobra.Command{
 	Use:   "aggregate",
 	Short: "Aggregate ADRs from configured sources",
-	Long:  `Fetch Architecture Decision Records from configured sources (GitHub, GitLab, Confluence) and store them in the database.`,
+	Long:  `Fetch Architecture Decision Records from configured sources (GitHub, GitLab, Confluence, filesystem) and store them in the database.`,
 	Run:   runAggregate,
 }
 
@@ -55,6 +55,8 @@ func runAggregate(cmd *cobra.Command, args []string) {
 			}
 		case "confluence":
 			f = fetcher.NewConfluenceFetcher()
+		case "filesystem":
+			f = fetcher.NewFileSystemFetcher()
 		default:
 			fmt.Printf("Unknown source type: %s (URL: %s)\n", source.Type, source.URL)
 			continue
