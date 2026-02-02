@@ -22,8 +22,8 @@ func TestFileSystemFetcher_Fetch(t *testing.T) {
 	}
 
 	for filename, content := range testFiles {
-		filepath := filepath.Join(tmpDir, filename)
-		err := os.WriteFile(filepath, []byte(content), 0644)
+		filePath := filepath.Join(tmpDir, filename)
+		err := os.WriteFile(filePath, []byte(content), 0644)
 		if err != nil {
 			t.Fatalf("failed to write test file %s: %v", filename, err)
 		}
